@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;700&display=swap');
+
+:root {
+    --body-background: #a9d3e1;
+    --text-color: #1c1a1aff;
+    --header-background: #5b9eaf;
+    --add-form-backgrond: #386672;
+    --add-form-text-color: #d9c7b4;
+    --button-green-color: #94e394;
+    --button-green-hover-color: #74c274;
+    --button-red-color: #fa6c48;
+    --button-red-hover-color: #c96853;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background-color: var(--body-background);
+    color: var(--text-color);
+    margin-bottom: 100px;
+    font-family: 'Roboto', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+#header {
+    background-color: var(--header-background);
+    display: flex;
+    justify-content: flex-start;
+    max-width: 100%;
+    padding: 40px;
+    margin: 0 auto;
+    border-bottom: 2px solid black;
+}
+
+#header > h1 {
+    display: flex;
+    font-weight: initial;
+    color: var(--text-color);
+    font-size: 90px;
+    line-height: 1;
+    letter-spacing: -4px;
+    text-align: center;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 60px;
+}
+
+.game-cell {
+    display: flex;
+    color: var(--add-form-text-color);
+    background-color: var(--header-background);
+    border: 1px solid black;
+    padding: 10px;
+
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-cell:hover {
+    background-color: var(--add-form-backgrond);
+}
+
+button {
+    padding: 16px;
+    border: 2px solid black;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.red-button {
+    background-color: var(--button-red-color);
+}
+
+.red-button:hover,
+.red-button:focus {
+    background-color: var(--button-red-hover-color);
+}
+
+.green-button {
+    background-color: var(--button-green-color);
+}
+
+.green-button:hover,
+.green-button:focus {
+    background-color: var(--button-green-hover-color);
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 24px;
+
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 1;
+}
