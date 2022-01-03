@@ -60,6 +60,7 @@ const gameLogic = (() => {
     let _turn = 1;
     const firstPlayer = Player('x');
     const secondPlayer = Player('o');
+    let _player = 'x';
 
     const doTurn = (index) => {
         if (_turn % 2 !== 0) {
@@ -69,8 +70,30 @@ const gameLogic = (() => {
             //player o
             gameBoard.setCell(index, secondPlayer.getPiece());
         }
-
+        if (checkWin())
         _turn++;
+    }
+
+   
+
+    const checkWin = (player, cellIndex) => {
+        const winConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+
+        return winConditions.filter((combination) => combination.includes(cellIndex))
+            .some((possibleCombination) =>
+              possibleCombination.every(
+                  (index) => gameBoard.getCell(index) === player
+              )
+            );
     }
 
     const getTurn = () => {
