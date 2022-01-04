@@ -22,6 +22,7 @@ const gameBoard = (() => {
     };
 
     const getCell = (index) => {
+        //console.log('get cell ' + _board[index]);
         return _board[index];
     };
 
@@ -60,23 +61,27 @@ const gameLogic = (() => {
     let _turn = 1;
     const firstPlayer = Player('x');
     const secondPlayer = Player('o');
-    let _player = 'x';
+    let _player;
 
     const doTurn = (index) => {
         if (_turn % 2 !== 0) {
             //player x
-            gameBoard.setCell(index, firstPlayer.getPiece());
+            _player = firstPlayer;
         } else {
             //player o
-            gameBoard.setCell(index, secondPlayer.getPiece());
+            _player = secondPlayer
         }
-        if (checkWin())
-        _turn++;
-    }
 
-   
+        gameBoard.setCell(index, _player.getPiece());
 
-    const checkWin = (player, cellIndex) => {
+        if (checkWin(_player.getPiece(), index)) {
+            gameOver(_player.getPiece());
+        } else {
+            _turn++;
+        }
+    };
+
+    const checkWin = (playerPiece, cellIndex) => {
         const winConditions = [
             [0, 1, 2],
             [3, 4, 5],
@@ -87,20 +92,23 @@ const gameLogic = (() => {
             [0, 4, 8],
             [2, 4, 6],
         ];
+        return  winConditions
+            .filter((possible) => possible.includes(+cellIndex))
+            .some((possibleCombo) => possibleCombo.every((index) =>
+                    gameBoard.getCell(index) === playerPiece))
+    };
 
-        return winConditions.filter((combination) => combination.includes(cellIndex))
-            .some((possibleCombination) =>
-              possibleCombination.every(
-                  (index) => gameBoard.getCell(index) === player
-              )
-            );
+    const gameOver = (player) => {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('winner-message').style.display = 'flex';
+        gameBoard.resetBoard();
     }
 
     const getTurn = () => {
         return _turn;
-    }
+    };
 
-    return {doTurn, getTurn};
+    return {doTurn, getTurn, checkWin};
 })();
 
 
