@@ -67,7 +67,11 @@ const displayController = (() => {
     }
 
     const _displayWinnerMessage = (winner) => {
-        _messageText.innerText = `Game over! Player ${winner} has won!`;
+        if (winner === 'tie') {
+            _messageText.innerText = 'It was a draw!';
+        } else {
+            _messageText.innerText = `Game over! Player ${winner} has won!`;
+        }
     }
 
     const resetGame = () => {
@@ -83,7 +87,6 @@ const displayController = (() => {
 
 const gameLogic = (() => {
     let _turn = 1;
-    let _isGameOver = false;
     let _player;
     let _moveOn = false;
     const _firstPlayer = Player('x');
@@ -117,7 +120,10 @@ const gameLogic = (() => {
 
         if (_checkWin(_player.getPiece(), index)) {
             displayController.gameOver(_player.getPiece());
-            _isGameOver = true;
+        }
+
+        if (_turn === 10) {
+            displayController.gameOver('tie');
         }
     };
 
