@@ -12,9 +12,9 @@ const Player = (piece) => {
 
 const gameBoard = (() => {
     const _board = [
-        'd', 'd', 'd',
-        'd', 'd', 'd',
-        'd', 'd', 'd'
+        ' ', ' ', ' ',
+        ' ', ' ', ' ',
+        ' ', ' ', ' '
     ];
 
     const setCell = (index, playerPiece) => {
@@ -30,6 +30,7 @@ const gameBoard = (() => {
         for (let i = 0; i < _board.length; i++) {
             _board[i] = ' ';
         }
+        displayController.drawBoard();
     };
 
     return { setCell, getCell, resetBoard };
@@ -37,6 +38,9 @@ const gameBoard = (() => {
 
 const displayController = (() => {
     const _cells = document.querySelectorAll('.game-cell');
+    const _overlay = document.getElementById('overlay');
+    const _winnerMessage = document.getElementById('winner-message');
+    const _messageText = document.getElementById('message-text');
 
     _cells.forEach((cell) =>
         cell.addEventListener('click', (e) => {
@@ -45,48 +49,79 @@ const displayController = (() => {
         })
     );
 
+    _overlay.addEventListener('click', (e) => {
+        _overlay.style.display = 'none';
+        _winnerMessage.style.display = 'none';
+    })
+
     const drawBoard = () => {
         for (let i = 0; i < _cells.length; i++) {
             _cells[i].textContent = gameBoard.getCell(i);
         }
     };
 
-   return {drawBoard};
+    const gameOver = (winner) => {
+        _overlay.style.display = 'block';
+        _winnerMessage.style.display = 'flex';
+        _displayWinnerMessage(winner);
+    }
+
+    const _displayWinnerMessage = (winner) => {
+        _messageText.innerText = `Game over! Player ${winner} has won!`;
+    }
+
+    const resetGame = () => {
+        _overlay.style.display = 'none';
+        _winnerMessage.style.display = 'none';
+    }
+
+
+   return {drawBoard, gameOver, resetGame};
 
 
 })();
 
 const gameLogic = (() => {
-    displayController.drawBoard();
     let _turn = 1;
-    const firstPlayer = Player('x');
-    const secondPlayer = Player('o');
+    let _isGameOver = false;
     let _player;
     let _moveOn = false;
+    const _firstPlayer = Player('x');
+    const _secondPlayer = Player('o');
+    const _reset = document.querySelectorAll('.restart-button');
+
+    const init = () => {
+        console.log('init')
+        displayController.drawBoard();
+        _reset.forEach(button => {
+            button.addEventListener('click', resetGame)
+        })
+    }
 
     const doTurn = (index) => {
         if (_turn % 2 !== 0) {
             //player x
-            _player = firstPlayer;
+            _player = _firstPlayer;
         } else {
             //player o
-            _player = secondPlayer
+            _player = _secondPlayer
         }
 
         do {
-            if (gameBoard.getCell(index) === 'd') {
+            if (gameBoard.getCell(index) === ' ') {
                 gameBoard.setCell(index, _player.getPiece());
                 _moveOn = true;
                 _turn++;
             }
         } while (!_moveOn)
 
-        if (checkWin(_player.getPiece(), index)) {
-            gameOver(_player.getPiece());
+        if (_checkWin(_player.getPiece(), index)) {
+            displayController.gameOver(_player.getPiece());
+            _isGameOver = true;
         }
     };
 
-    const checkWin = (playerPiece, cellIndex) => {
+    const _checkWin = (playerPiece, cellIndex) => {
         const winConditions = [
             [0, 1, 2],
             [3, 4, 5],
@@ -103,18 +138,20 @@ const gameLogic = (() => {
                     gameBoard.getCell(index) === playerPiece))
     };
 
-    const gameOver = (player) => {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('winner-message').style.display = 'flex';
+    const resetGame = () => {
+        _turn = 1;
         gameBoard.resetBoard();
-    }
+        displayController.resetGame();
+    };
+
 
     const getTurn = () => {
         return _turn;
     };
 
-    return {doTurn, getTurn, checkWin};
+    return {doTurn, getTurn, init};
 })();
 
+gameLogic.init();
 
 
