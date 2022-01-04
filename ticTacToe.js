@@ -62,6 +62,7 @@ const gameLogic = (() => {
     const firstPlayer = Player('x');
     const secondPlayer = Player('o');
     let _player;
+    let _moveOn = false;
 
     const doTurn = (index) => {
         if (_turn % 2 !== 0) {
@@ -72,12 +73,16 @@ const gameLogic = (() => {
             _player = secondPlayer
         }
 
-        gameBoard.setCell(index, _player.getPiece());
+        do {
+            if (gameBoard.getCell(index) === 'd') {
+                gameBoard.setCell(index, _player.getPiece());
+                _moveOn = true;
+                _turn++;
+            }
+        } while (!_moveOn)
 
         if (checkWin(_player.getPiece(), index)) {
             gameOver(_player.getPiece());
-        } else {
-            _turn++;
         }
     };
 
